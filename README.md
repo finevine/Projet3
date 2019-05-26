@@ -13,4 +13,4 @@ La structure du labyrinthe est à éditer avec un tableur :
 
 ![La structure](/images/labyrinthe-tableur.jpg)
 
-Le fichier est à exporter en "csv" (séparateur virgule)
+Le fichier est à exporter en "csv" (séparateur ";")
