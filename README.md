@@ -15,5 +15,5 @@ La structure du labyrinthe (P3-Labyrinthe.ods) est à éditer avec un tableur :
 
 Le fichier est à exporter en "csv" (séparateur ";")
 On part du postulat que le labyrinthe est bien conçu :
-    - pas de tuile isolée
-    - on peut le parcourir sans problème (pas d'arrivée sur un goulot d'étranglement)
+- pas de tuile isolée
+- on peut le parcourir sans problème (pas d'arrivée sur un goulot d'étranglement)
