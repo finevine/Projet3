@@ -1,19 +1,19 @@
-Projet3
+Project3
 =======
-Aider McGyver à s'échapper
+Help Mac Gyver to escape
 
-Construction du labyrinthe
+Design of the maze
 --------------------------
-La structure du labyrinthe (P3-Labyrinthe.ods) est à éditer avec un tableur :
-- des 0 pour les tuiles inaccessibles
-- pour les tuiles accessibles :
-    - 1 pour les tuiles classiques
-    - D pour le départ
-    - A pour l'arrivée
+The structure of the maze (P3-Labyrinthe.ods) can be edited as a spreassheet :
+- 0 for tiles unaccessibles
+- for accessible tiles :
+    - 1 for classic tiles
+    - D for departure
+    - A for arrival
 
-![La structure](/images/labyrinthe-tableur.jpg)
+![The structure](/images/maze-spreadsheet.jpg)
 
-Le fichier est à exporter en "csv" (séparateur ";")
-On part du postulat que le labyrinthe est bien conçu :
-- pas de tuile isolée
-- on peut le parcourir sans problème (pas d'arrivée sur un goulot d'étranglement)
+The file is to export as a csv (separator ";")
+The maze has to be well designed:
+- no isolated tile
+- it can be traveled without problem (it's possible to finish the game)
