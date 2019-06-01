@@ -1,0 +1,65 @@
+{
+    "item": "gardien",
+    "type": "perso",
+    "image": "Gardien.png",
+},
+{
+    "item": "mcgyver",
+    "type": "perso",
+    "image": "MacGyver.png",
+},
+{
+    "item": "aiguille",
+    "type": "object",
+    "image": "aiguille.png",
+},
+{
+    "item": "seringue",
+    "type": "object",
+    "image": "seringue.png",
+},
+{
+    "item": "ether",
+    "type": "object",
+    "image": "ether.png",
+},
+{
+    "item": "plastic",
+    "type": "object",
+    "image": "tube_plastique.png",
+},
+{
+    "item": "persos",
+    "type": "visual",
+    "image": "personnages.png"
+}
+{
+    "item": "floors",
+    "type": "visual",
+    "image": "floor-tiles-20x20.png"
+},
+{
+    "item": "items",
+    "type": "visual",
+    "image": "items.png"
+},
+{
+    "item": "structures",
+    "type": "visual",
+    "image": "structures.png"
+},
+{
+    "item": "decorations",
+    "type": "visual",
+    "image": "decorations.png"
+},
+{
+    "item": "lifebars",
+    "type": "visual",
+    "image": "lifebar-32x32.png"
+},
+{
+    "item": "equipments",
+    "type": "visual",
+    "image": "equipment-32x32.png"
+}
