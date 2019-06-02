@@ -1,30 +1,15 @@
 import numpy as np
 
 class Map:
-    """arg = csv with 0, 1, D, A with separator ;"""
-
-    def __init__(self, map):
+    """arg = csv with 0, 1, 2, 3 with separator ;"""
+    def __init__(self, map, tile_size):
         #empty list
-        departure = []
-        classic_tiles = []
-        arrival = []
-        row_ind = 0
-        #open csv file
-        data = np.loadtxt(map,dtype=str, delimiter=';')
-        # iterate on rows and cols to get accessible tiles
-        for row in data:
-            col_ind = 0
-            for cell in row:
-                if cell == '1':
-                    classic_tiles.append((row_ind, col_ind))
-                elif cell == 'D':
-                    departure.append((row_ind, col_ind))
-                elif cell == 'A':
-                    arrival.append((row_ind, col_ind))
-                col_ind += 1
-            row_ind +=1
-        #return complete list [D, accessibles, A]
-        self.map = departure + classic_tiles + arrival
+        self.skl = np.genfromtxt(map, delimiter=';')
+        self.tile_size = tile_size
+
+    @classmethod
+    def display(cls):
+        pass
 
 class Object:
     """Object type """
@@ -37,7 +22,7 @@ class Object:
         pass
 
 class Person:
-    def __init__(self, type, position, dress):
+    def __init__(self, type, position, dress, map):
         self.type = type
         self.position = position
         self.dress = dress
@@ -52,12 +37,3 @@ class Person:
         #wounded/die
         #take
         pass
-
-def main():
-    #initialize Map
-    main_map = Map('Structure.csv')
-    #place object on the Map
-    #place persons on the Map
-    print(main_map.map)
-
-main()
