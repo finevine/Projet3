@@ -5,33 +5,33 @@ class Map:
     SPRITE_WIDTH = 20
 
     """arg = csv with 0, 1, 2, 3 with separator ;"""
-    def __init__(self, map, tile_size):
-        #empty list
+    def __init__(self, map):
         self.skl = np.genfromtxt(map, delimiter=';')
-        self.tile_size = tile_size
 
-    @classmethod
     def display(cls):
         pass
 
 class Person:
-    def __init__(self, type, map):
+    def __init__(self, type, map, position):
         self.type = type
-        self.position = position
-        if type == mcgyver:
+        if type == 'macgyver':
             self.position = np.where(map.skl == 2)
-        elif type == guardian:
+        elif type == 'guardian':
             self.position = np.where(map.skl == 3)
 
-    @classmethod
-    def initialize(cls):
-        #position
-        pass
-
-    def move(cls):
-        #die
-        #take
-        pass
+    def move(self, pos2):
+        x1 = self.position[0]
+        y1 = self.position[1]
+        x2 = pos2[0]
+        y2 = pos2[1]
+        if (abs(x1-x2), abs(y1-y2)) in [(1,0), (0,1), (0,0)]:
+            print(self.position)
+        else:
+            print('Error')
+        #SI POS2 EST ACCESSIBLE:
+            #SELF.POSITION = POS2
+        #ELSE:
+            #PASS
 
 class Object:
     """Object type """
@@ -40,5 +40,5 @@ class Object:
         self.position = position
 
     @classmethod
-    def taken(cls):
+    def initialize(cls):
         pass
