@@ -5,6 +5,7 @@ pygame.init()
 
 # DEFINE MAP
 map = Map('Structure.csv')
+print(map.free_cells)
 
 # INITIALIZE PERSONS ON THE MAP
 macgyver = Person('macgyver', map, (0,0))
@@ -30,6 +31,7 @@ clock = pygame.time.Clock()
 # -------- MAIN PROGRAM LOOP -----------
 while carryOn:
     # --- MAIN EVENT LOOP
+    keyPressed = 0
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
               carryOn = False # Flag that we are done so we exit this loop
@@ -44,11 +46,10 @@ while carryOn:
     screen.fill(WHITE)
 
     # DRAW MAP
-    (free_row, free_col) = np.where(map.skl > 0)
-    i = 0
-    while i < free_col.size:
-        pygame.draw.rect(screen, BLACK, [free_col[i] * 20 , free_row[i] * 20, 20, 20],0)
-        i += 1
+    free_cells_index = np.where(map.skl > 0)
+    free_cells = list(zip(free_cells_index[0], free_cells_index[1]))
+    for tuple in free_cells:
+        pygame.draw.rect(screen, BLACK, [tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
 
 
     # MOVE PERSONS ON THE MAP
@@ -56,14 +57,44 @@ while carryOn:
     # |     y  #
     # |        #
     # V  x     #
-
     # choices = {
-    #     pygame.K_UP: macgyver.position[0] -=1, #UP',
-    #     pygame.K_RIGHT: macgyver.position[1] +=1, #RIGHT',
-    #     pygame.K_DOWN: macgyver.position[0] +=1, #DOWN',
-    #     pygame.K_LEFT: macgyver.position[1] -=1#LEFT'
+    #     pygame.K_UP: macgyver.position[0] -=1, #UP 273,
+    #     pygame.K_RIGHT: macgyver.position[1] +=1, #RIGHT 275,
+    #     pygame.K_DOWN: macgyver.position[0] +=1, #DOWN 274,
+    #     pygame.K_LEFT: macgyver.position[1] -=1 #LEFT 276
     # }
-    # choices[event.key]
+    # choices = {
+    #     273: macgyver.position[0] -= 1, #UP 273,
+    #     275: macgyver.position[1] += 1, #RIGHT 275,
+    #     274: macgyver.position[0] += 1, #DOWN 274,
+    #     276: macgyver.position[1] -= 1 #LEFT 276
+    # }
+    # choices.get(keyPressed, [])
+    (x1, y1) = macgyver.position
+    (x2, y2) = macgyver.position
+    if keyPressed == 273:
+        x2 -= 1
+    elif keyPressed == 274:
+        x2 += 1
+    elif keyPressed == 275:
+        y2 += 1
+    elif keyPressed == 276:
+        y2 -= 1
+    else:
+        pass
+
+    if (x2, y2) in map.free_cells:
+        macgyver.move((x2,y2))
+    else:
+        pass
+    #print(macgyver.position)
+        #SI POS2 EST ACCESSIBLE:
+            #SELF.POSITION = POS2
+        #ELSE:
+            #PASS    guardian.move((14,2))
+
+
+
 
     #RÉCUPÉRER LA TOUCHE TAPÉE
     #SI LA CAS EST LIBRE:
