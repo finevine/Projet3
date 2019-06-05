@@ -51,25 +51,20 @@ while carryOn:
     for tuple in free_cells:
         pygame.draw.rect(screen, BLACK, [tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
 
+    # DRAW PERSONS
+    pygame.draw.rect(screen, GREEN, [macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
+    pygame.draw.rect(screen, RED, [guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
+
 
     # MOVE PERSONS ON THE MAP
     # 0 ---->  #
     # |     y  #
     # |        #
     # V  x     #
-    # choices = {
-    #     pygame.K_UP: macgyver.position[0] -=1, #UP 273,
-    #     pygame.K_RIGHT: macgyver.position[1] +=1, #RIGHT 275,
-    #     pygame.K_DOWN: macgyver.position[0] +=1, #DOWN 274,
-    #     pygame.K_LEFT: macgyver.position[1] -=1 #LEFT 276
-    # }
-    # choices = {
-    #     273: macgyver.position[0] -= 1, #UP 273,
-    #     275: macgyver.position[1] += 1, #RIGHT 275,
-    #     274: macgyver.position[0] += 1, #DOWN 274,
-    #     276: macgyver.position[1] -= 1 #LEFT 276
-    # }
-    # choices.get(keyPressed, [])
+    #RÉCUPÉRER LA TOUCHE TAPÉE
+    #SI LA CAS EST LIBRE:
+        #ALLER SUR LA CASE
+    #SINON RESTER SUR LA MÊME CASE
     (x1, y1) = macgyver.position
     (x2, y2) = macgyver.position
     if keyPressed == 273:
@@ -87,20 +82,6 @@ while carryOn:
         macgyver.move((x2,y2))
     else:
         pass
-    #print(macgyver.position)
-        #SI POS2 EST ACCESSIBLE:
-            #SELF.POSITION = POS2
-        #ELSE:
-            #PASS    guardian.move((14,2))
-
-
-
-
-    #RÉCUPÉRER LA TOUCHE TAPÉE
-    #SI LA CAS EST LIBRE:
-        #ALLER SUR LA CASE
-    #SINON RESTER SUR LA MÊME CASE
-
 
 
     # PLACE OBJECT ON THE MAP
