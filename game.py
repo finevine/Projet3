@@ -22,6 +22,19 @@ size = (15 * map.SPRITE_WIDTH, 15 * map.SPRITE_WIDTH)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Mac Gyver escapes")
 
+# DRAW IMUTABLE ITEMS
+    # MAP
+screen.fill(WHITE)
+free_cells_index = np.where(map.skl > 0)
+free_cells = list(zip(free_cells_index[0], free_cells_index[1]))
+for tuple in free_cells:
+    pygame.draw.rect(screen, BLACK, [tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
+
+    #GUARDIAN
+pygame.draw.rect(screen, RED, [guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
+
+guardian_image = pygame.transform.scale(pygame.image.load("ressource/Gardien.png"),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
+
 # THE LOOP WILL CARRY ON UNTIL THE USER EXIT THE GAME (E.G. CLICKS THE CLOSE BUTTON).
 carryOn = True
 
@@ -41,22 +54,7 @@ while carryOn:
             if event.type == pygame.KEYDOWN:
                 keyPressed = event.key
 
-    # --- DRAWING CODE SHOULD GO HERE
-    # FIRST, CLEAR THE SCREEN TO WHITE.
-    screen.fill(WHITE)
-
-    # DRAW MAP
-    free_cells_index = np.where(map.skl > 0)
-    free_cells = list(zip(free_cells_index[0], free_cells_index[1]))
-    for tuple in free_cells:
-        pygame.draw.rect(screen, BLACK, [tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
-
-    # DRAW PERSONS
-    pygame.draw.rect(screen, GREEN, [macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
-    pygame.draw.rect(screen, RED, [guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
-
-
-    # MOVE PERSONS ON THE MAP
+    # MOVE MACGYVER ON THE MAP
     # 0 ---->  #
     # |     y  #
     # |        #
@@ -82,6 +80,11 @@ while carryOn:
         macgyver.move((x2,y2))
     else:
         pass
+
+    # --- DRAWING CODE SHOULD GO HERE --------
+    # DRAW MACGYVER
+    pygame.draw.rect(screen, BLACK, [y1 * map.SPRITE_WIDTH , x1 * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
+    pygame.draw.rect(screen, GREEN, [macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
 
 
     # PLACE OBJECT ON THE MAP
