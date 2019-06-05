@@ -8,8 +8,8 @@ The structure of the maze (P3-Labyrinthe.ods) can be edited as a spreassheet :
 - 0 for tiles unaccessibles
 - for accessible tiles :
     - 1 for classic tiles
-    - D for departure
-    - A for arrival
+    - 2 for departure
+    - 3 for arrival
 
 ![The structure](/images/maze-spreadsheet.jpg)
 
