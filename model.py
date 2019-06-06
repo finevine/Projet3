@@ -1,11 +1,11 @@
 import numpy as np
-import pygame
-import random
+import pygame as py
+import random as rd
 
 class Map:
     '''ARG = CSV WITH 0, 1, 2, 3 WITH SEPARATOR ;'''
 
-    SPRITE_WIDTH = 20
+    SPRITE_WIDTH = 30
 
     def __init__(self, map):
         self.skl = np.genfromtxt(map, delimiter=';')
@@ -31,7 +31,7 @@ class Person:
         elif type == 'guardian':
             a = 3 # PAR CONVENTION
         self.position = (np.where(map.skl == a)[0][0], np.where(map.skl == a)[1][0])
-        self.image = pygame.transform.scale(pygame.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
+        self.image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
 
     def move(self, pos2):
         (x1, y1) = self.position
@@ -59,8 +59,17 @@ class Objects:
         list = []
         for type in self.TYPES:
             classic_cells = map.classic_cells
-            rand_int = random.randint(0, len(classic_cells) - 1)
+            rand_int = rd.randint(0, len(classic_cells) - 1)
             position = classic_cells.pop(rand_int)
-            image = pygame.transform.scale(pygame.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
+            image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
             list.append(Object(type, position, image))
         self.list = list
+
+class Tiles:
+    def __init__(self, map, row, col):
+        img = py.image.load('ressource/floor-tiles-20x20.png')
+        surfs = []
+        for i in range(4):
+            tile = img.subsurface((row + i) * 20, (col) * 20, 20, 20)
+            surfs.append(py.transform.scale(tile,(map.SPRITE_WIDTH, map.SPRITE_WIDTH)))
+        self.surfs = surfs
