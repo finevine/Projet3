@@ -83,12 +83,16 @@ class Objects:
         self.list = list
 
 class Sprite:
-    LEVEL = 7
+    LEVEL = 3
 
     def __init__(self, type, map, row, col, width):
         img = py.image.load('ressource/'+type+'.png')
         surfs = []
-        for i in range(self.LEVEL):
+        if type =='floor-tiles-20x20':
+            r = 3
+        else:
+            r = self.LEVEL
+        for i in range(r):
             tile = img.subsurface((row + i) * width, (col) * width, width, width)
             surfs.append(py.transform.scale(tile,(map.SPRITE_WIDTH, map.SPRITE_WIDTH)))
         self.surfs = surfs

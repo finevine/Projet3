@@ -1,11 +1,11 @@
 from model import *
 from datetime import datetime
 
-level = input("How many ennemies (3 to 8) ? ")
+level = input("How many ennemies (0 to 10) ? ")
 py.init()
 
 # -------- SET LEVEL DIFFICULTY -----------
-Sprite.LEVEL = int(level) # from 4 to 8
+Sprite.LEVEL = int(level) # from 0 to 10
 
 # -------- INITIALIZE -----------
 # DEFINE MAP
