@@ -1,15 +1,23 @@
 from model import *
+from datetime import datetime
 
 py.init()
 
 
 # -------- INITIALIZE -----------
 # DEFINE MAP
-map = Map('Structure2.csv')
+map = Map('Structure.csv')
+Sprite.LEVEL = 4 # from 4 to 8
 
 # INITIALIZE PERSONS ON THE MAP
 macgyver = Person('macgyver', map, (0,0))
 guardian = Person('guardian',map, (0,0))
+ennemies = []
+ennemies_images = Sprite('personnages', map, 0, 0, 32).surfs
+for i in range(len(ennemies_images)):
+    ennemy = Person('ennemy', map, (0,0))
+    ennemy.image = ennemies_images[i]
+    ennemies.append(ennemy)
 
 # INITIALIZE OBJECTS ON THE MAP
 objects = Objects(map)
@@ -24,7 +32,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 # DEFINE TILES
-tiles = Tiles(map, 5, 0)
+tiles = Sprite('floor-tiles-20x20', map, 5, 0, 20)
 
 # OPEN A NEW WINDOW
 size = (15 * map.SPRITE_WIDTH, 15 * map.SPRITE_WIDTH)
@@ -52,8 +60,14 @@ while carryOn:
         # LISTEN FOR PRESSED KEY
         else:
             # MOVE ONE BY ONE
-            if event.type == py.KEYDOWN:
+            if event.type == py.KEYDOWN and playing:
                 keyPressed = event.key
+                # MOVE ENNEMIES ON THE MAP
+                for ennemy in ennemies:
+                    rd.seed(datetime.now())
+                    ennemy_move = rd.choice([273, 274, 275, 276])
+                    ennemy.move(ennemy_move, map)
+
 
     # MOVE MACGYVER ON THE MAP
     # 0 ---->  #
@@ -65,18 +79,6 @@ while carryOn:
         #ALLER SUR LA CASE
     #SINON RESTER SUR LA MÊME CASE
     (x1, y1) = macgyver.position
-    (x2, y2) = macgyver.position
-
-    if keyPressed == 273:
-        x2 -= 1
-    elif keyPressed == 274:
-        x2 += 1
-    elif keyPressed == 275:
-        y2 += 1
-    elif keyPressed == 276:
-        y2 -= 1
-    else:
-        pass
 
     # pressed = py.key.get_pressed()
     # if pressed[py.K_UP]:
@@ -90,10 +92,8 @@ while carryOn:
     # else:
     #     pass
 
-    if (x2, y2) in map.free_cells and playing:
-        macgyver.move((x2,y2))
-    else:
-        pass
+    if playing:
+        macgyver.move(keyPressed, map)
 
     # MAC GYVER TAKE AN OBJECT ON THE MAP
     if macgyver.position in objects_pos:
@@ -114,14 +114,19 @@ while carryOn:
     # REDRAW PERSONS
     screen.blit(guardian.image, (guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH))
     screen.blit(macgyver.image, (macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH))
+    for ennemy in ennemies:
+        screen.blit(ennemy.image, (ennemy.position[1] * map.SPRITE_WIDTH , ennemy.position[0] * map.SPRITE_WIDTH))
 
     # REDRAW OBJECT ON THE MAP
     for object in objects.list:
         screen.blit(object.image, (object.position[1] * map.SPRITE_WIDTH , object.position[0] * map.SPRITE_WIDTH))
 
-    distance_from_guard = np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))
+    dist_from_ennemies = [np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))]
+    for ennemy in ennemies:
+        dist_from_ennemies.append(np.linalg.norm(np.array(macgyver.position) - np.array(ennemy.position)))
+
     # MAC GYVER WIN OR DIE
-    if distance_from_guard == 1.0:
+    if min(dist_from_ennemies) == 1.0:
         playing = False
         if objects.list == []:
             py.display.set_caption("IT'S A WIN!")

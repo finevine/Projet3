@@ -25,22 +25,41 @@ class Person:
     def __init__(self, type, map, position):
         self.type = type
         a = 1
+        place = 0
         if type == 'macgyver':
             a = 2 # PAR CONVENTION
         elif type == 'guardian':
             a = 3 # PAR CONVENTION
-        self.position = (np.where(map.skl == a)[0][0], np.where(map.skl == a)[1][0])
-        self.image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
+        elif type == 'ennemy':
+            a = 1
+            place = rd.randint(0, len(np.where(map.skl == a)[0]-1))
+            print(place)
+        self.position = (np.where(map.skl == a)[0][place], np.where(map.skl == a)[1][place])
+        if type != 'ennemy':
+            self.image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
 
-    def move(self, pos2):
+    def move(self, keyPressed, map):
         (x1, y1) = self.position
-        (x2, y2) = pos2
-        #SI POS2 EST ACCESSIBLE:
-        if ((abs(x1-x2), abs(y1-y2)) in [(1,0), (0,1), (0,0)]):
-            self.position = pos2
-            # FOR TESTING print(pos2)
+        (x2, y2) = (x1, y1)
+        if keyPressed == 273:
+            x2 -= 1
+        elif keyPressed == 274:
+            x2 += 1
+        elif keyPressed == 275:
+            y2 += 1
+        elif keyPressed == 276:
+            y2 -= 1
         else:
-            print('Error')
+            pass
+        #SI x2, y2 EST ACCESSIBLE:
+        if ((abs(x1-x2), abs(y1-y2)) in [(1,0), (0,1), (0,0)]) and (x2, y2) in map.free_cells:
+            self.position = (x2, y2)
+
+class Ennemy:
+    def __init__(self, position, image):
+        self.type = type
+        self.position = position
+        self.image = image
 
 class Object:
 
@@ -64,11 +83,13 @@ class Objects:
             list.append(Object(type, position, image))
         self.list = list
 
-class Tiles:
-    def __init__(self, map, row, col):
-        img = py.image.load('ressource/floor-tiles-20x20.png')
+class Sprite:
+    LEVEL = 7
+    
+    def __init__(self, type, map, row, col, width):
+        img = py.image.load('ressource/'+type+'.png')
         surfs = []
-        for i in range(4):
-            tile = img.subsurface((row + i) * 20, (col) * 20, 20, 20)
+        for i in range(self.LEVEL):
+            tile = img.subsurface((row + i) * width, (col) * width, width, width)
             surfs.append(py.transform.scale(tile,(map.SPRITE_WIDTH, map.SPRITE_WIDTH)))
         self.surfs = surfs
