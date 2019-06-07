@@ -32,8 +32,7 @@ class Person:
             a = 3 # PAR CONVENTION
         elif type == 'ennemy':
             a = 1
-            place = rd.randint(0, len(np.where(map.skl == a)[0]-1))
-            print(place)
+            place = rd.randint(1, len(np.where(map.skl == a)[0]-1))
         self.position = (np.where(map.skl == a)[0][place], np.where(map.skl == a)[1][place])
         if type != 'ennemy':
             self.image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
@@ -85,7 +84,7 @@ class Objects:
 
 class Sprite:
     LEVEL = 7
-    
+
     def __init__(self, type, map, row, col, width):
         img = py.image.load('ressource/'+type+'.png')
         surfs = []

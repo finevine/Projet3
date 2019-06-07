@@ -3,11 +3,12 @@ from datetime import datetime
 
 py.init()
 
+# -------- SET LEVEL DIFFICULTY -----------
+Sprite.LEVEL = 5 # from 4 to 8
 
 # -------- INITIALIZE -----------
 # DEFINE MAP
 map = Map('Structure.csv')
-Sprite.LEVEL = 4 # from 4 to 8
 
 # INITIALIZE PERSONS ON THE MAP
 macgyver = Person('macgyver', map, (0,0))
@@ -126,10 +127,12 @@ while carryOn:
         dist_from_ennemies.append(np.linalg.norm(np.array(macgyver.position) - np.array(ennemy.position)))
 
     # MAC GYVER WIN OR DIE
-    if min(dist_from_ennemies) == 1.0:
+    if min(dist_from_ennemies) <= 1.0:
         playing = False
-        if objects.list == []:
+        if objects.list == [] and np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position)) == 1:
             py.display.set_caption("IT'S A WIN!")
+
+            # DISPLAY WIN SPLASH SCREEN
             you_win = py.image.load('ressource/you_win.png')
             you_win = py.transform.scale(you_win,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
             screen.blit(
@@ -137,13 +140,15 @@ while carryOn:
                 (screen.get_width() / 2 - you_win.get_width() / 2 , screen.get_height() / 2 - you_win.get_height() / 2)
             )
         else:
+            py.display.set_caption("YOU DIE!")
+
+            # DISPLAY LOOSE SPLASH SCREEN
             you_lose = py.image.load('ressource/you_lose.png')
             you_lose = py.transform.scale(you_lose,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
             screen.blit(
                 you_lose,
                 (screen.get_width() / 2 - you_lose.get_width() / 2 , screen.get_height() / 2 - you_lose.get_height() / 2)
             )
-            py.display.set_caption("YOU DIE!")
 
     # --- GO AHEAD AND UPDATE THE SCREEN WITH WHAT WE'VE DRAWN. ---
     py.display.flip()
