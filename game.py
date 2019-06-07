@@ -1,10 +1,11 @@
 from model import *
 from datetime import datetime
 
+level = input("How many ennemies (3 to 8) ? ")
 py.init()
 
 # -------- SET LEVEL DIFFICULTY -----------
-Sprite.LEVEL = 5 # from 4 to 8
+Sprite.LEVEL = int(level) # from 4 to 8
 
 # -------- INITIALIZE -----------
 # DEFINE MAP
@@ -109,8 +110,7 @@ while carryOn:
     # REDRAW MAP
     for tuple in map.free_cells:
         rd.seed(tuple[1]/(tuple[0]+1))
-        screen.blit(tiles.surfs[rd.randint(0, 3)], (tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH))
-        #py.draw.rect(screen, BLACK, [tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
+        screen.blit(tiles.surfs[rd.randint(0, 2)], (tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH))
 
     # REDRAW PERSONS
     screen.blit(guardian.image, (guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH))
