@@ -3,8 +3,7 @@ import pygame as py
 import random as rd
 
 class Map:
-    '''ARG = CSV WITH 0, 1, 2, 3 WITH SEPARATOR ;'''
-
+    '''ARG = CSV WITH 0, 1, 2, 3 WITH SEPARATOR ";"'''
     SPRITE_WIDTH = 30
 
     def __init__(self, map):

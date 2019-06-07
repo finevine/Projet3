@@ -101,15 +101,14 @@ while carryOn:
         del(objects_pos[object_found_ind])
         del(objects.list[object_found_ind])
 
+    distance_from_guard = np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))
     # MAC GYVER WIN OR DIE
-    if macgyver.position == guardian.position:
+    if distance_from_guard == 1.0:
         playing = False
         if objects.list == []:
             py.display.set_caption("IT'S A WIN!")
         else:
             py.display.set_caption("YOU DIE!")
-
-
 
     # ----- DRAWING CODE SHOULD GO HERE -----
     # FIRST, CLEAR THE SCREEN TO WHITE.
@@ -122,8 +121,8 @@ while carryOn:
         #py.draw.rect(screen, BLACK, [tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH, map.SPRITE_WIDTH, map.SPRITE_WIDTH],0)
 
     # REDRAW PERSONS
-    screen.blit(macgyver.image, (macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH))
     screen.blit(guardian.image, (guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH))
+    screen.blit(macgyver.image, (macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH))
 
     # REDRAW OBJECT ON THE MAP
     for object in objects.list:
