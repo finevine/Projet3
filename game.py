@@ -1,11 +1,11 @@
 from model import *
 from datetime import datetime
 
-level = input("How many ennemies (0 to 10) ? ")
-py.init()
-
 # -------- SET LEVEL DIFFICULTY -----------
+level = input("How many ennemies (0 to 10) ? ")
 Sprite.LEVEL = int(level) # from 0 to 10
+
+py.init()
 
 # -------- INITIALIZE -----------
 # DEFINE MAP
@@ -30,8 +30,6 @@ for object in objects.list:
 # DEFINE COLORS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
 
 # DEFINE TILES
 tiles = Sprite('floor-tiles-20x20', map, 5, 0, 20)
@@ -52,12 +50,12 @@ clock = py.time.Clock()
 py.key.set_repeat(400,30)
 
 
-# -------- MAIN PROGRAM LOOP -----------
+# ----------------------------------- MAIN PROGRAM LOOP -----------
 while carryOn:
-    # ----- MAIN EVENT LOOP -----
+    # ------------------------------- MAIN EVENT LOOP -----
     keyPressed = 0
     for event in py.event.get(): # USER DID SOMETHING
-        if event.type == py.QUIT: # IF USER CLICKED CLOSE
+        if event.type == py.QUIT or py.key.get_pressed()[py.K_ESCAPE]: # IF USER CLICKED CLOSE
               carryOn = False # FLAG THAT WE ARE DONE SO WE EXIT THIS LOOP
         # LISTEN FOR PRESSED KEY
         else:
@@ -72,43 +70,28 @@ while carryOn:
 
 
     # MOVE MACGYVER ON THE MAP
-    # 0 ---->  #
-    # |     y  #
-    # |        #
-    # V  x     #
-    #RÉCUPÉRER LA TOUCHE TAPÉE
-    #SI LA CASE EST LIBRE:
-        #ALLER SUR LA CASE
-    #SINON RESTER SUR LA MÊME CASE
     (x1, y1) = macgyver.position
-
-    # pressed = py.key.get_pressed()
-    # if pressed[py.K_UP]:
-    #     x2 -= 1
-    # elif pressed[py.K_DOWN]:
-    #     x2 += 1
-    # elif pressed[py.K_RIGHT]:
-    #     y2 += 1
-    # elif pressed[py.K_LEFT]:
-    #     y2 -= 1
-    # else:
-    #     pass
-
     if playing:
         macgyver.move(keyPressed, map)
 
+
     # MAC GYVER TAKE AN OBJECT ON THE MAP
     if macgyver.position in objects_pos:
+        # GET INDEX OF OBJECT
         object_found_ind = objects_pos.index(macgyver.position)
+        # CLEAR POSITION ON THE MAP
         del(objects_pos[object_found_ind])
+        # CLEAR OBJECT FROM OBJECTS LIST
         del(objects.list[object_found_ind])
 
-    # ----- DRAWING CODE SHOULD GO HERE -----
+
+    # ----------------------------- DRAWING CODE GOES HERE -----
     # FIRST, CLEAR THE SCREEN TO WHITE.
     screen.fill(BLACK)
 
     # REDRAW MAP
     for tuple in map.free_cells:
+        # DRAW A RANDOM TILE AMONGST 3 OF THEM
         rd.seed(tuple[1]/(tuple[0]+1))
         screen.blit(tiles.surfs[rd.randint(0, 2)], (tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH))
 
@@ -122,6 +105,9 @@ while carryOn:
     for object in objects.list:
         screen.blit(object.image, (object.position[1] * map.SPRITE_WIDTH , object.position[0] * map.SPRITE_WIDTH))
 
+
+
+    # COMPUTE DISTANCE FROM ENNEMIES
     dist_from_ennemies = [np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))]
     for ennemy in ennemies:
         dist_from_ennemies.append(np.linalg.norm(np.array(macgyver.position) - np.array(ennemy.position)))
@@ -132,7 +118,7 @@ while carryOn:
         if objects.list == [] and np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position)) == 1:
             py.display.set_caption("IT'S A WIN!")
 
-            # DISPLAY WIN SPLASH SCREEN
+            # DISPLAY "WIN" SPLASH SCREEN
             you_win = py.image.load('ressource/you_win.png')
             you_win = py.transform.scale(you_win,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
             screen.blit(
@@ -142,7 +128,7 @@ while carryOn:
         else:
             py.display.set_caption("YOU DIE!")
 
-            # DISPLAY LOOSE SPLASH SCREEN
+            # DISPLAY "LOOSE" SPLASH SCREEN
             you_lose = py.image.load('ressource/you_lose.png')
             you_lose = py.transform.scale(you_lose,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
             screen.blit(

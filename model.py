@@ -32,12 +32,16 @@ class Person:
             a = 3 # PAR CONVENTION
         elif type == 'ennemy':
             a = 1
-            place = rd.randint(1, len(np.where(map.skl == a)[0]-1))
+            place = rd.randint(1, len(np.where(map.skl == a)[0]-2))
         self.position = (np.where(map.skl == a)[0][place], np.where(map.skl == a)[1][place])
         if type != 'ennemy':
             self.image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
 
     def move(self, keyPressed, map):
+            # 0 ---->  #
+            # |     y  #
+            # |        #
+            # V  x     #
         (x1, y1) = self.position
         (x2, y2) = (x1, y1)
         if keyPressed == 273:
@@ -53,6 +57,17 @@ class Person:
         #SI x2, y2 EST ACCESSIBLE:
         if ((abs(x1-x2), abs(y1-y2)) in [(1,0), (0,1), (0,0)]) and (x2, y2) in map.free_cells:
             self.position = (x2, y2)
+        # pressed = py.key.get_pressed()
+        # if pressed[py.K_UP]:
+        #     x2 -= 1
+        # elif pressed[py.K_DOWN]:
+        #     x2 += 1
+        # elif pressed[py.K_RIGHT]:
+        #     y2 += 1
+        # elif pressed[py.K_LEFT]:
+        #     y2 -= 1
+        # else:
+        #     pass
 
 class Ennemy:
     def __init__(self, position, image):
