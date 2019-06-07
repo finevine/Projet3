@@ -101,15 +101,6 @@ while carryOn:
         del(objects_pos[object_found_ind])
         del(objects.list[object_found_ind])
 
-    distance_from_guard = np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))
-    # MAC GYVER WIN OR DIE
-    if distance_from_guard == 1.0:
-        playing = False
-        if objects.list == []:
-            py.display.set_caption("IT'S A WIN!")
-        else:
-            py.display.set_caption("YOU DIE!")
-
     # ----- DRAWING CODE SHOULD GO HERE -----
     # FIRST, CLEAR THE SCREEN TO WHITE.
     screen.fill(BLACK)
@@ -128,7 +119,26 @@ while carryOn:
     for object in objects.list:
         screen.blit(object.image, (object.position[1] * map.SPRITE_WIDTH , object.position[0] * map.SPRITE_WIDTH))
 
-
+    distance_from_guard = np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))
+    # MAC GYVER WIN OR DIE
+    if distance_from_guard == 1.0:
+        playing = False
+        if objects.list == []:
+            py.display.set_caption("IT'S A WIN!")
+            you_win = py.image.load('ressource/you_win.png')
+            you_win = py.transform.scale(you_win,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
+            screen.blit(
+                you_win,
+                (screen.get_width() / 2 - you_win.get_width() / 2 , screen.get_height() / 2 - you_win.get_height() / 2)
+            )
+        else:
+            you_lose = py.image.load('ressource/you_lose.png')
+            you_lose = py.transform.scale(you_lose,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
+            screen.blit(
+                you_lose,
+                (screen.get_width() / 2 - you_lose.get_width() / 2 , screen.get_height() / 2 - you_lose.get_height() / 2)
+            )
+            py.display.set_caption("YOU DIE!")
 
     # --- GO AHEAD AND UPDATE THE SCREEN WITH WHAT WE'VE DRAWN. ---
     py.display.flip()
