@@ -1,13 +1,14 @@
 import numpy as np
 import pygame as py
 import random as rd
+from datetime import datetime
 
 class Map:
     '''ARG = CSV WITH 0, 1, 2, 3 WITH SEPARATOR ";"'''
     SPRITE_WIDTH = 30
 
     def __init__(self, map):
-        self.skl = np.genfromtxt(map, delimiter=';')
+        self.skl = np.nan_to_num((np.genfromtxt(map, delimiter=';')))
 
     @property
     def free_cells(self):
@@ -15,9 +16,20 @@ class Map:
         return list(zip(free_cells_index[0], free_cells_index[1]))
 
     @property
+    def decoration(self):
+        rd.seed(1)
+        return {c: rd.randint(0, 2) for c in self.free_cells}
+
+    @property
     def classic_cells(self):
         classic_cells_index = np.where(self.skl == 1)
         return list(zip(classic_cells_index[0], classic_cells_index[1]))
+
+    def draw(self, sprites, screen):
+        assert len(sprites.surfs) >=3, 'pas assez de tuiles'
+        for tuple in self.free_cells:
+            # DRAW A RANDOM TILE AMONGST 3 OF THEM
+            sprites.draw_sprite(self.decoration[(tuple[0], tuple[1])], screen, tuple[0] * self.SPRITE_WIDTH , tuple[1] * self.SPRITE_WIDTH)
 
 class Person:
     ''' POSITION OF THE PERSON DEPEND OF ITS TYPE BY CONSTRUCTION OF THE MAP '''
@@ -32,7 +44,9 @@ class Person:
             a = 3 # PAR CONVENTION
         elif type == 'ennemy':
             a = 1
+            rd.seed(datetime.now())
             place = rd.randint(1, len(np.where(map.skl == a)[0]-2))
+
         self.position = (np.where(map.skl == a)[0][place], np.where(map.skl == a)[1][place])
         if type != 'ennemy':
             self.image = py.transform.scale(py.image.load('ressource/'+type+'.png'),(map.SPRITE_WIDTH, map.SPRITE_WIDTH))
@@ -57,17 +71,15 @@ class Person:
         #SI x2, y2 EST ACCESSIBLE:
         if ((abs(x1-x2), abs(y1-y2)) in [(1,0), (0,1), (0,0)]) and (x2, y2) in map.free_cells:
             self.position = (x2, y2)
-        # pressed = py.key.get_pressed()
-        # if pressed[py.K_UP]:
-        #     x2 -= 1
-        # elif pressed[py.K_DOWN]:
-        #     x2 += 1
-        # elif pressed[py.K_RIGHT]:
-        #     y2 += 1
-        # elif pressed[py.K_LEFT]:
-        #     y2 -= 1
-        # else:
-        #     pass
+
+    def draw_person(self, screen, x, y):
+        screen.blit(self.image, (y, x))
+
+    def distance(self, person2):
+        return np.linalg.norm(np.array(self.position) - np.array(person2.position))
+
+    def take(self, object):
+        pass
 
 class Ennemy:
     def __init__(self, position, image):
@@ -81,6 +93,10 @@ class Object:
         self.type = type
         self.position = position
         self.image = image
+
+    def draw_object(self, screen, x, y):
+        '''need to depend on the map since it is erased if a Person step on the obect'''
+        screen.blit(self.image, (y, x))
 
 class Objects:
     '''OBJECT TYPE HAS AN ATTRIBUTE LIST OF OBJECTS THAT DEPEND ON THE MAP GIVEN IN ARGUMENT '''
@@ -111,3 +127,14 @@ class Sprite:
             tile = img.subsurface((row + i) * width, (col) * width, width, width)
             surfs.append(py.transform.scale(tile,(map.SPRITE_WIDTH, map.SPRITE_WIDTH)))
         self.surfs = surfs
+
+    def draw_sprite(self, n, screen, x, y):
+        screen.blit(self.surfs[n], (y, x))
+
+def end_print(result, screen):
+    result = py.image.load('ressource/'+result+'.png')
+    result = py.transform.scale(result,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
+    return screen.blit(
+        result,
+        (screen.get_width() / 2 - result.get_width() / 2 , screen.get_height() / 2 - result.get_height() / 2)
+    )

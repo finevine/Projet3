@@ -1,8 +1,9 @@
 from model import *
-from datetime import datetime
 
 # -------- SET LEVEL DIFFICULTY -----------
 level = input("How many ennemies (0 to 10) ? ")
+while int(level) not in range(11):
+    level = input("Ennemies must be between 0 and 10 : ")
 Sprite.LEVEL = int(level) # from 0 to 10
 
 py.init()
@@ -11,6 +12,18 @@ py.init()
 # DEFINE MAP
 map = Map('Structure.csv')
 
+# OPEN A NEW WINDOW
+size = (15 * map.SPRITE_WIDTH, 15 * map.SPRITE_WIDTH)
+screen = py.display.set_mode(size)
+py.display.set_caption("Mac Gyver escapes")
+# CLEAR THE SCREEN TO BLACK.
+BLACK = (0, 0, 0)
+screen.fill(BLACK)
+
+# DRAW MAP WITH TILES
+tiles = Sprite('floor-tiles-20x20', map, 5, 0, 20)
+map.draw(tiles, screen)
+
 # INITIALIZE PERSONS ON THE MAP
 macgyver = Person('macgyver', map, (0,0))
 guardian = Person('guardian',map, (0,0))
@@ -18,41 +31,27 @@ ennemies = []
 ennemies_images = Sprite('personnages', map, 0, 0, 32).surfs
 for i in range(len(ennemies_images)):
     ennemy = Person('ennemy', map, (0,0))
+    while ennemy.distance(macgyver) <= 1: # NOT TO LOOSE AT THE BEGINNING OF GAME
+        ennemy = Person('ennemy', map, (0,0))
     ennemy.image = ennemies_images[i]
     ennemies.append(ennemy)
 
 # INITIALIZE OBJECTS ON THE MAP
 objects = Objects(map)
-objects_pos = []
-for object in objects.list:
-    objects_pos.append(object.position)
+objects_pos = [object.position for object in objects.list]
 
-# DEFINE COLORS
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
-# DEFINE TILES
-tiles = Sprite('floor-tiles-20x20', map, 5, 0, 20)
-
-# OPEN A NEW WINDOW
-size = (15 * map.SPRITE_WIDTH, 15 * map.SPRITE_WIDTH)
-screen = py.display.set_mode(size)
-py.display.set_caption("Mac Gyver escapes")
-
-# THE LOOP WILL CARRY ON UNTIL THE USER EXIT THE GAME (E.G. CLICKS THE CLOSE BUTTON).
-carryOn = True
-playing = True
+# THE LOOP WILL CARRY ON UNTIL THE USER EXIT THE GAME.
+carryOn = True # WHILE NOT QUIT
+playing = True # WHILE NOT WIN AND NOT LOOSE
+update = True # WHEN KEY PRESSED
 
 # THE CLOCK WILL BE USED TO CONTROL HOW FAST THE SCREEN UPDATES
 clock = py.time.Clock()
-
-
 py.key.set_repeat(400,30)
 
 
 # ----------------------------------- MAIN PROGRAM LOOP -----------
 while carryOn:
-    # ------------------------------- MAIN EVENT LOOP -----
     keyPressed = 0
     for event in py.event.get(): # USER DID SOMETHING
         if event.type == py.QUIT or py.key.get_pressed()[py.K_ESCAPE]: # IF USER CLICKED CLOSE
@@ -62,83 +61,65 @@ while carryOn:
             # MOVE ONE BY ONE
             if event.type == py.KEYDOWN and playing:
                 keyPressed = event.key
-                # MOVE ENNEMIES ON THE MAP
-                for ennemy in ennemies:
-                    rd.seed(datetime.now())
-                    ennemy_move = rd.choice([273, 274, 275, 276])
-                    ennemy.move(ennemy_move, map)
+                update = True
+    # ------------------------------- EVENTS -----
+    if update:
+        # MOVE ENNEMIES ON THE MAP
+        for ennemy in ennemies:
+            (x, y) = ennemy.position
+            rd.seed(datetime.now())
+            ennemy_move = rd.choice([273, 274, 275, 276])
+            ennemy.move(ennemy_move, map)
+            # UPDATE LAST POSITION
+            tiles.draw_sprite(map.decoration[(x, y)], screen, x * map.SPRITE_WIDTH, y * map.SPRITE_WIDTH)
 
+        # MOVE MACGYVER ON THE MAP
+        (x1, y1) = macgyver.position
+        if playing:
+            macgyver.move(keyPressed, map)
+        # UPDATE LAST POSITION
+        tiles.draw_sprite(map.decoration[(x1,y1)], screen, x1 * map.SPRITE_WIDTH, y1 * map.SPRITE_WIDTH)
 
-    # MOVE MACGYVER ON THE MAP
-    (x1, y1) = macgyver.position
-    if playing:
-        macgyver.move(keyPressed, map)
+        # ----------------------------- DRAWING CODE GOES HERE -----
+        # DRAW OBJECT ON THE MAP
+        for object in objects.list:
+            object.draw_object(screen, object.position[0] * map.SPRITE_WIDTH, object.position[1] * map.SPRITE_WIDTH)
 
+        # REDRAW PERSONS
+        guardian.draw_person(
+            screen, guardian.position[0] * map.SPRITE_WIDTH , guardian.position[1] * map.SPRITE_WIDTH)
+        macgyver.draw_person(
+            screen, macgyver.position[0] * map.SPRITE_WIDTH , macgyver.position[1] * map.SPRITE_WIDTH)
+        for ennemy in ennemies:
+            ennemy.draw_person(
+                screen, ennemy.position[0] * map.SPRITE_WIDTH , ennemy.position[1] * map.SPRITE_WIDTH)
 
-    # MAC GYVER TAKE AN OBJECT ON THE MAP
-    if macgyver.position in objects_pos:
-        # GET INDEX OF OBJECT
-        object_found_ind = objects_pos.index(macgyver.position)
-        # CLEAR POSITION ON THE MAP
-        del(objects_pos[object_found_ind])
-        # CLEAR OBJECT FROM OBJECTS LIST
-        del(objects.list[object_found_ind])
+        # MAC GYVER TAKE AN OBJECT ON THE MAP
+        if macgyver.position in objects_pos:
+            # GET INDEX OF OBJECT
+            object_found_ind = objects_pos.index(macgyver.position)
+            # CLEAR POSITION ON THE MAP
+            del(objects_pos[object_found_ind])
+            # CLEAR OBJECT FROM OBJECTS LIST
+            del(objects.list[object_found_ind])
 
+        # COMPUTE DISTANCE FROM ENNEMIES
+        dist_from_ennemies = [macgyver.distance(guardian)] + [macgyver.distance(ennemy) for ennemy in ennemies]
 
-    # ----------------------------- DRAWING CODE GOES HERE -----
-    # FIRST, CLEAR THE SCREEN TO WHITE.
-    screen.fill(BLACK)
+        # MAC GYVER WIN OR DIE
+        if min(dist_from_ennemies) <= 1.0:
+            playing = False
+            if objects.list == [] and macgyver.distance(guardian) == 1:
+                py.display.set_caption("IT'S A WIN!")
+                end_print('you_win', screen)
+            else:
+                py.display.set_caption("YOU DIE!")
+                end_print('you_lose', screen)
+                # DISPLAY "LOOSE" SPLASH SCREEN
 
-    # REDRAW MAP
-    for tuple in map.free_cells:
-        # DRAW A RANDOM TILE AMONGST 3 OF THEM
-        rd.seed(tuple[1]/(tuple[0]+1))
-        screen.blit(tiles.surfs[rd.randint(0, 2)], (tuple[1] * map.SPRITE_WIDTH , tuple[0] * map.SPRITE_WIDTH))
-
-    # REDRAW PERSONS
-    screen.blit(guardian.image, (guardian.position[1] * map.SPRITE_WIDTH , guardian.position[0] * map.SPRITE_WIDTH))
-    screen.blit(macgyver.image, (macgyver.position[1] * map.SPRITE_WIDTH , macgyver.position[0] * map.SPRITE_WIDTH))
-    for ennemy in ennemies:
-        screen.blit(ennemy.image, (ennemy.position[1] * map.SPRITE_WIDTH , ennemy.position[0] * map.SPRITE_WIDTH))
-
-    # REDRAW OBJECT ON THE MAP
-    for object in objects.list:
-        screen.blit(object.image, (object.position[1] * map.SPRITE_WIDTH , object.position[0] * map.SPRITE_WIDTH))
-
-
-
-    # COMPUTE DISTANCE FROM ENNEMIES
-    dist_from_ennemies = [np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position))]
-    for ennemy in ennemies:
-        dist_from_ennemies.append(np.linalg.norm(np.array(macgyver.position) - np.array(ennemy.position)))
-
-    # MAC GYVER WIN OR DIE
-    if min(dist_from_ennemies) <= 1.0:
-        playing = False
-        if objects.list == [] and np.linalg.norm(np.array(macgyver.position) - np.array(guardian.position)) == 1:
-            py.display.set_caption("IT'S A WIN!")
-
-            # DISPLAY "WIN" SPLASH SCREEN
-            you_win = py.image.load('ressource/you_win.png')
-            you_win = py.transform.scale(you_win,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
-            screen.blit(
-                you_win,
-                (screen.get_width() / 2 - you_win.get_width() / 2 , screen.get_height() / 2 - you_win.get_height() / 2)
-            )
-        else:
-            py.display.set_caption("YOU DIE!")
-
-            # DISPLAY "LOOSE" SPLASH SCREEN
-            you_lose = py.image.load('ressource/you_lose.png')
-            you_lose = py.transform.scale(you_lose,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
-            screen.blit(
-                you_lose,
-                (screen.get_width() / 2 - you_lose.get_width() / 2 , screen.get_height() / 2 - you_lose.get_height() / 2)
-            )
-
-    # --- GO AHEAD AND UPDATE THE SCREEN WITH WHAT WE'VE DRAWN. ---
-    py.display.flip()
-
+        # --- GO AHEAD AND UPDATE THE SCREEN WITH WHAT WE'VE DRAWN. ---
+        py.display.flip()
+    update = False
     # --- LIMIT TO 60 FRAMES PER SECOND ---
     clock.tick(60)
 
