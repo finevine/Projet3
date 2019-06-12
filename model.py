@@ -45,7 +45,7 @@ class Person:
         elif type == 'ennemy':
             a = 1
             rd.seed(datetime.now())
-            place = rd.randint(1, len(np.where(map.skl == a)[0]-2))
+            place = rd.randint(0, len(np.where(map.skl == a)[0]-1))
 
         self.position = (np.where(map.skl == a)[0][place], np.where(map.skl == a)[1][place])
         if type != 'ennemy':
