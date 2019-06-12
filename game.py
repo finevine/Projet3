@@ -2,7 +2,7 @@ from play_game import *
 
 py.init()
 level = 0
-life_num = 4
+life_num = 5
 
 while level <= 10 and life_num != 0:
     play = play_game(level, life_num)

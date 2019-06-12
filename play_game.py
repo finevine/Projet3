@@ -11,7 +11,7 @@ def play_game(level, life_num):
 
     # -------- INITIALIZE -----------
     # DEFINE MAP
-    map = Map('Structure.csv')
+    map = Map('structures/Structure'+str(level)+'.csv')
 
     # OPEN A NEW WINDOW
     size = (15 * map.SPRITE_WIDTH, 15 * map.SPRITE_WIDTH)
@@ -19,11 +19,15 @@ def play_game(level, life_num):
     py.display.set_caption("Mac Gyver escapes")
     # CLEAR THE SCREEN TO BLACK.
     BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
     screen.fill(BLACK)
 
     # DRAW MAP WITH TILES
     tiles = Sprite('floor-tiles-20x20', map, 5, 0, 20)
     map.draw(tiles, screen)
+    font = py.font.Font('ressource/ARCADECLASSIC.ttf', 25)
+    level_text = font.render('L '+str(level), 0, WHITE)
+    level_text_Rect = level_text.get_rect()
 
     # INITIALIZE PERSONS ON THE MAP
     macgyver = Person('macgyver', map, (0,0))
@@ -100,10 +104,11 @@ def play_game(level, life_num):
                 ennemy.draw_person(
                     screen, ennemy.position[0] * map.SPRITE_WIDTH , ennemy.position[1] * map.SPRITE_WIDTH)
 
-            # REDRAW LIVES
+            # REDRAW LIVES & LEVEL
             heart = py.transform.scale(py.image.load('ressource/heart.png'),(int(map.SPRITE_WIDTH/2), int(map.SPRITE_WIDTH/2)))
             for i in range(life_num):
                 screen.blit(heart, (20 * i + 10, 5))
+            screen.blit(level_text, (screen.get_width() - level_text_Rect.width-10, 5))
 
             # MAC GYVER TAKE AN OBJECT ON THE MAP
             if macgyver.position in objects_pos:
@@ -122,11 +127,15 @@ def play_game(level, life_num):
                 playing = False
                 if objects.list == [] and macgyver.distance(guardian) == 1:
                     py.display.set_caption("IT'S A WIN!")
-                    end_print('you_win', screen)
+                    end_print('you_win', 'Press any key to continue', screen)
                     win = True
                 else:
+                    if life_num == 1:
+                        message = 'GAME OVER'
+                    else:
+                        message = 'Press any key to continue'
                     py.display.set_caption("YOU DIE!")
-                    end_print('you_lose', screen)
+                    end_print('you_lose', message, screen)
                     loose = True
 
             # --- GO AHEAD AND UPDATE THE SCREEN WITH WHAT WE'VE DRAWN. ---

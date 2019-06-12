@@ -45,7 +45,7 @@ class Person:
         elif type == 'ennemy':
             a = 1
             rd.seed(datetime.now())
-            place = rd.randint(0, len(np.where(map.skl == a)[0]-1))
+            place = rd.randint(0, len(np.where(map.skl == a)[0]) - 1)
 
         self.position = (np.where(map.skl == a)[0][place], np.where(map.skl == a)[1][place])
         if type != 'ennemy':
@@ -131,10 +131,18 @@ class Sprite:
     def draw_sprite(self, n, screen, x, y):
         screen.blit(self.surfs[n], (y, x))
 
-def end_print(result, screen):
+def end_print(result, message, screen):
+    WHITE = (255, 255, 255)
     result = py.image.load('ressource/'+result+'.png')
     result = py.transform.scale(result,(int(screen.get_width() / 2), int(screen.get_width() / 2)))
-    return screen.blit(
+    font = py.font.Font('ressource/ARCADECLASSIC.ttf', 25)
+    level_text = font.render(message, 0, WHITE)
+    level_text_Rect = level_text.get_rect()
+    screen.blit(
         result,
         (screen.get_width() / 2 - result.get_width() / 2 , screen.get_height() / 2 - result.get_height() / 2)
+    )
+    screen.blit(
+        level_text,
+        (screen.get_width() / 2 - level_text_Rect.width / 2 , 6 * screen.get_height() / 8 +10)
     )
