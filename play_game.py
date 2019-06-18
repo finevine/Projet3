@@ -143,6 +143,3 @@ def play_game(level, life_num):
         update = False
         # --- LIMIT TO 60 FRAMES PER SECOND ---
         clock.tick(60)
-
-# ONCE WE HAVE EXITED THE MAIN PROGRAM LOOP WE CAN STOP THE GAME ENGINE:
-py.quit()
