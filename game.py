@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # coding: utf-8
-
+'''This is a game round in the while loop'''
 from play_game import *
 
 py.init()
