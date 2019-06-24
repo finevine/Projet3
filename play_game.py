@@ -1,6 +1,6 @@
 '''
 A round of the game used in the game.py
-it uses model.py for the classes
+it uses model.py for the classes 
 '''
 from random import seed, choice
 from datetime import datetime
