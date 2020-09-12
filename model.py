@@ -66,13 +66,13 @@ class Person:
             # V  x     #
         (x_1, y_1) = self.position
         (x_2, y_2) = (x_1, y_1)
-        if keyPressed == 273:
+        if keyPressed == py.K_UP:
             x_2 -= 1
-        elif keyPressed == 274:
+        elif keyPressed == py.K_DOWN:
             x_2 += 1
-        elif keyPressed == 275:
+        elif keyPressed == py.K_RIGHT:
             y_2 += 1
-        elif keyPressed == 276:
+        elif keyPressed == py.K_LEFT:
             y_2 -= 1
         else:
             pass

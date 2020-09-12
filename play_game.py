@@ -84,7 +84,7 @@ def play_game(level, life_num):
             for ennemy in ennemies:
                 (x_en, y_en) = ennemy.position
                 seed(datetime.now())
-                ennemy_move = choice([273, 274, 275, 276])
+                ennemy_move = choice([py.K_UP, py.K_DOWN, py.K_RIGHT, py.K_LEFT])
                 ennemy.move(ennemy_move, map_game)
                 # UPDATE LAST POSITION
                 tiles.draw_sprite(map_game.decoration[(x_en, y_en)], screen,
